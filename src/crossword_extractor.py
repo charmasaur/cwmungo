@@ -65,9 +65,9 @@ def get_cw_mask(input):
     tr = 0
     tc = 0
     locs = cv2.findNonZero(filled)
-    for (x, y) in locs:
-      tc += x
-      tr += y
+    for asdf in locs:
+      tc += asdf[1]
+      tr += asdf[0]
 
     oldmask = mask.copy()
 
