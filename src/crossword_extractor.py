@@ -144,7 +144,7 @@ def get_grid_count(input):
     return 1;
     """
     # with this:
-    mags = np.absolute(np.fft.fft(vals)
+    mags = np.absolute(np.fft.fft(vals))
     thresh = np.percentile(mags, 90)
     # take the first peak after fst that's over the 90th percentile
     fst = 9
