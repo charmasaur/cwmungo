@@ -13,7 +13,7 @@ def principal_angle(angle):
     return math.fmod(tmp + math.pi, 2 * math.pi) - math.pi # [-pi, pi)
 
 # gets the rotation angle using hough transform (works best with a single big rectangle, like a mask)
-var get_angle_hough(input):
+def get_angle_hough(input):
     edge = cv2.Canny(input, 50, 200)
     
     thresh = 0
