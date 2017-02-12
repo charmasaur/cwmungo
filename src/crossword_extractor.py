@@ -157,7 +157,7 @@ def get_grid_count(input):
     # take the first peak after fst that's over the 90th percentile
     fst = 9
     last = mags[fst]
-    for i in range(fst + 1, len(fst)):
+    for i in range(fst + 1, len(mags)):
         ti = mags[i]
         if ti < last and last > thresh:
             return i - 1
