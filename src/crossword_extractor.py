@@ -87,7 +87,7 @@ def get_cw_mask(input):
 # orthogonal truncated crossword
 def get_cw_orth_trunc(input):
     mask = get_cw_mask(input)
-    return np.nonzero(mask).size
+    return (len(np.nonzero(mask)), mask[10,10], mask[300, 800])
 
     # get angle and rotate appropriately
     angle = get_angle_hough(mask)
