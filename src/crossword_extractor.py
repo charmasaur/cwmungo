@@ -194,7 +194,7 @@ def apply(input):
         return "Error"
     image = cv2.imdecode(np.fromstring(base64.b64decode(image_data_base64), dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
     black, width = get_grid(image)
-    result = "Width " + str(width)
+    result = str(width) + " " + str(width)
     for row in black:
         result += "|"
         for col in row:
