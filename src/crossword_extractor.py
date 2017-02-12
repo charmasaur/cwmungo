@@ -111,7 +111,11 @@ def get_grid_count(input):
     while first or lines.size() > 100:
         first = False
         thresh += 10
-        lines = cv2.HoughLines(tmp, 5, CV_PI/180, thresh, 0, 0)
+        lines = cv2.HoughLines(tmp, 5, math.pi/180, thresh, 0, 0)
+
+    if not lines:
+        # TODO: error
+        return 1
         
     for (rho, theta) in lines:
         rho = abs(rho)
