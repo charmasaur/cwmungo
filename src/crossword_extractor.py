@@ -55,7 +55,7 @@ def get_cw_mask(input):
     # Fill from all corners
     ini = 1
 
-    col = cv2.cv.Scalar(0, 0, 0)
+    col = (0, 0, 0)
     mask = np.zeros(filled.shape[0] + 2, filled.shape[1] + 2, np.uint8)
     cv2.floodFill(filled, mask, (ini,ini), col)
     cv2.floodFill(filled, mask, (filled.shape[1] - ini,ini), col)
@@ -71,8 +71,8 @@ def get_cw_mask(input):
 
     oldmask = mask.copy()
 
-    bc = cv2.cv.Scalar(255, 255, 255);
-    cv2.floodFill(filled, mask, (double(tc) / double(len(locs)), double(tr) / double(len(locs))), cv2.cv.Scalar(255, 0, 0), bc, bc)
+    bc = (255, 255, 255)
+    cv2.floodFill(filled, mask, (double(tc) / double(len(locs)), double(tr) / double(len(locs))), (255, 0, 0), bc, bc)
     mask -= oldmask
     outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
     
