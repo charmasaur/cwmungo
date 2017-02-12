@@ -108,7 +108,7 @@ def get_grid_count(input):
     first = True
     lines = []
     thresh = 0
-    while first or lines.size() > 100:
+    while first or (lines and len(lines)) > 100:
         first = False
         thresh += 10
         lines = cv2.HoughLines(tmp, 5, math.pi/180, thresh, 0, 0)
