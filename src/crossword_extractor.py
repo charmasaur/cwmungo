@@ -110,14 +110,10 @@ def get_grid_count(input):
     first = True
     lines = []
     thresh = 0
-    while first or (lines and len(lines)) > 100:
+    while first or len(lines) > 100:
         first = False
         thresh += 10
         lines = cv2.HoughLines(tmp, 5, math.pi/180, thresh, 0, 0)
-
-    if not lines:
-        # TODO: error
-        return 1
         
     for (rho, theta) in lines:
         rho = abs(rho)
