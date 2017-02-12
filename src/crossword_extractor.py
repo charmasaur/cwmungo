@@ -51,7 +51,7 @@ def rotate(input, angle):
 # crossword mask
 def get_cw_mask(input):
     filled = input.copy()
-    filled = cv2.threshold(filled, 128., 255., cv2.THRESH_BINARY)
+    (_,filled) = cv2.threshold(filled, 128., 255., cv2.THRESH_BINARY)
     # Fill from all corners
     ini = 1
 
