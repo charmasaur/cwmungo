@@ -57,6 +57,7 @@ def rotate(input, angle):
 def get_cw_mask(input):
     filled = input.copy()
     (_,filled) = cv2.threshold(filled, 128., 255., cv2.THRESH_BINARY)
+    return len(np.nonzero(filled))
     # Fill from all corners
     ini = 1
 
@@ -87,7 +88,7 @@ def get_cw_mask(input):
 # orthogonal truncated crossword
 def get_cw_orth_trunc(input):
     mask = get_cw_mask(input)
-    return (len(np.nonzero(mask)), mask[10,10], mask[300, 800], input[10,10], input[300,800])
+    return mask
 
     # get angle and rotate appropriately
     angle = get_angle_hough(mask)
