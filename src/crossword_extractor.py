@@ -186,7 +186,7 @@ def is_black_square(input, grid_count, row, col):
 def get_grid(input):
     cw = get_cw_orth_trunc(input)
     width = get_grid_count(cw)
-
+    return ("hi", cw.shape)
     black = [[is_black_square(cw, width, r, c) for c in range(width)] for r in range(width)]
     return (black, width)
 
