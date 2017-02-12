@@ -119,7 +119,7 @@ def get_grid_count(input):
         theta = thingo[0][1]
         rho = abs(thingo[0][0])
         # only take things that are within the image and vaguely orthogonal
-        if rho < mx and (abs(cos(theta)) < 0.1 or abs(sin(theta)) < 0.1):
+        if rho < mx and (abs(math.cos(theta)) < 0.1 or abs(math.sin(theta)) < 0.1):
             vals[rho] = vals[rho] + 1
 
     # TODO: This might be wrong, since I replaced the below old version
