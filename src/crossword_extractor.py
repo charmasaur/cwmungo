@@ -45,7 +45,7 @@ def rotate(input, angle):
     midr = input.shape[0] / 2
     midc = input.shape[1] / 2
     # Actually rotate the input
-    rot = cv2.getRotationMatrix2D((midc, midr), angle, 1.f);
+    rot = cv2.getRotationMatrix2D((midc, midr), angle, 1.)
     return cv2.warpAffine(input, rot, (input.shape[1], input.shape[0]))
 
 # crossword mask
