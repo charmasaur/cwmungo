@@ -115,8 +115,9 @@ def get_grid_count(input):
         thresh += 10
         lines = cv2.HoughLines(tmp, 5, math.pi/180, thresh, 0, 0)
         
-    for (rho, theta) in lines:
-        rho = abs(rho)
+    for thingo in lines:
+        theta = thingo[1]
+        rho = abs(thingo[0])
         # only take things that are within the image and vaguely orthogonal
         if rho < mx and (abs(cos(theta)) < 0.1 or abs(sin(theta)) < 0.1):
             vals[rho] = vals[rho] + 1
