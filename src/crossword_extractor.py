@@ -57,7 +57,6 @@ def rotate(input, angle):
 def get_cw_mask(input):
     filled = input.copy()
     (_,filled) = cv2.threshold(filled, 128., 255., cv2.THRESH_BINARY)
-    return np.nonzero(filled)
     # Fill from all corners
     ini = 1
 
@@ -71,9 +70,10 @@ def get_cw_mask(input):
     tr = 0
     tc = 0
     locs = np.nonzero(filled)
-    for asdf in locs:
-      tc += asdf[1]
-      tr += asdf[0]
+    return locs
+    for i in len(locs[0]):
+      tc += locs[1][i]
+      tr += locs[0][i]
 
     oldmask = mask.copy()
 
