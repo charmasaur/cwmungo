@@ -82,7 +82,7 @@ def get_cw_mask(input):
     outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
     
     #outputMask.convertTo(outputMask, CV_8UC1, 255.);
-    return outputMask
+    return outputMask*255.
 
 # orthogonal truncated crossword
 def get_cw_orth_trunc(input):
