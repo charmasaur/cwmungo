@@ -18,11 +18,11 @@ def get_angle_hough(input):
     
     thresh = 0
     while True:
-        thresh += 10
+        thresh += 2
         lines = cv2.HoughLines(edge, 5, math.pi/180, thresh, 0, 0)
         if len(lines) <= 10:
             break
-            
+
     angles = 0.
     angle_count = 0
     for thingo in lines:
