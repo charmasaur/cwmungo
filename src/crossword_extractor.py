@@ -70,14 +70,15 @@ def get_cw_mask(input):
     tr = 0
     tc = 0
     locs = np.nonzero(filled)
-    for i in range(len(locs[0])):
+    nlocs = len(locs[0])
+    for i in range(nlocs):
       tc += locs[1][i]
       tr += locs[0][i]
 
     oldmask = mask.copy()
 
     bc = (255, 255, 255)
-    cv2.floodFill(filled, mask, (int(float(tc) / float(len(locs))), int(float(tr) / float(len(locs)))), (255, 0, 0), bc, bc)
+    cv2.floodFill(filled, mask, (int(float(tc) / float(nlocs)), int(float(tr) / float(nlocs))), (255, 0, 0), bc, bc)
     mask -= oldmask
     outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
     
