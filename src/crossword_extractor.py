@@ -38,7 +38,7 @@ def get_angle_hough(input):
             angles += pang
             angle_count += 1
         
-    rot_angle_rad = angles / double(angle_count)
+    rot_angle_rad = angles / float(angle_count)
     rot_angle_deg = rot_angle_rad * 180. / math.pi
     return rot_angle_deg
 
