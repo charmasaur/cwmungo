@@ -15,7 +15,7 @@ def principal_angle(angle):
 # gets the rotation angle using hough transform (works best with a single big rectangle, like a mask)
 def get_angle_hough(input):
     edge = cv2.Canny(input, 50, 200)
-    return np.nonzero(edge)
+    return max(input), max(edge)
     
     thresh = 0
     while True:
