@@ -187,9 +187,9 @@ def get_grid(input):
     cw = get_cw_orth_trunc(input)
     width = get_grid_count(cw)
     
-    black = [[is_black_square(cw, width, r, c) for c in range(width)] for r in range(width)]
-    
-    return (black, width)
+    #black = [[is_black_square(cw, width, r, c) for c in range(width)] for r in range(width)]
+    return ("hi", cw.shape)
+    #return (black, width)
 
 def apply(input):
     if "b64data" in input and isinstance(input["b64data"], basestring):
