@@ -70,7 +70,7 @@ def get_cw_mask(input):
     tr = 0
     tc = 0
     locs = np.nonzero(filled)
-    for i in len(locs[0]):
+    for i in range(len(locs[0])):
       tc += locs[1][i]
       tr += locs[0][i]
 
