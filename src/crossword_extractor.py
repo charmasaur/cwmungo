@@ -95,7 +95,7 @@ def get_cw_orth_trunc(input):
 
     whites = cv2.findNonZero(mask)
     rect = cv2.boundingRect(whites)
-    return input[rect(1):rect(1)+rect(3), rect(0):rect(0)+rect(2)]
+    return input[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
 
 # get grid count (assumes square)
 def get_grid_count(input):
