@@ -56,7 +56,7 @@ def get_cw_mask(input):
     ini = 1
 
     col = (0, 0, 0)
-    mask = np.zeros(filled.shape[0] + 2, filled.shape[1] + 2, np.uint8)
+    mask = np.zeros((filled.shape[0] + 2, filled.shape[1] + 2), np.uint8)
     cv2.floodFill(filled, mask, (ini,ini), col)
     cv2.floodFill(filled, mask, (filled.shape[1] - ini,ini), col)
     cv2.floodFill(filled, mask, (filled.shape[1] - ini,filled.shape[0] - ini), col)
