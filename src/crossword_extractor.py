@@ -96,7 +96,7 @@ def get_cw_orth_trunc(input):
 def get_grid_count(input):
     tmp = cv2.Canny(input, 50, 200)
 
-    // get line spacings
+    # get line spacings
     mx = max(input.shape)
     vals = np.zeros(mx)
 
