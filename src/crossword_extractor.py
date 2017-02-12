@@ -20,26 +20,23 @@ def get_angle_hough(input):
     while True:
         thresh += 10
         lines = cv2.HoughLines(edge, 5, math.pi/180, thresh, 0, 0)
-        if not lines or len(lines) <= 10:
+        if len(lines) <= 10:
             break
             
     angles = 0.
     angle_count = 0
-    if lines:
-        for (rho, theta) in lines:
-            pang = principal_angle(theta) # (-pi, pi)
-            if pang < -math.pi / 2:
-                pang += math.pi
-            if pang > math.pi / 2:
-                pang -= math.pi
-            # (-pi/2, pi/2)
-            if pang < math.pi / 4 and pang > -math.pi/4:
-                angles += pang
-                angle_count += 1
-
-    if angle_count == 0:
-        # TODO Throw an error
-        return 0
+    for thingo in lines:
+        rho = thingo[0][0]
+        theta = thingo[0][1]
+        pang = principal_angle(theta) # (-pi, pi)
+        if pang < -math.pi / 2:
+            pang += math.pi
+        if pang > math.pi / 2:
+            pang -= math.pi
+        # (-pi/2, pi/2)
+        if pang < math.pi / 4 and pang > -math.pi/4:
+            angles += pang
+            angle_count += 1
         
     rot_angle_rad = angles / double(angle_count)
     rot_angle_deg = rot_angle_rad * 180. / math.pi
