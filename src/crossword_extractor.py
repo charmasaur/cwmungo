@@ -2,6 +2,186 @@ import Algorithmia
 import base64
 import cv2
 import numpy as np
+import math
+
+# helper to convert an angle (in radians) to [-pi, pi)
+def principal_angle(angle):
+    tmp = math.fmod(angle, 2 * math.pi) # (-2pi, 2pi)
+    if tmp < 0:
+        tmp += 2 * math.pi
+    # [0, 2pi)
+    return math.fmod(tmp + math.pi, 2 * math.pi) - math.pi # [-pi, pi)
+
+# gets the rotation angle using hough transform (works best with a single big rectangle, like a mask)
+var get_angle_hough(input):
+    edge = cv2.Canny(input, 50, 200)
+    
+    thresh = 0
+    while True:
+        thresh += 10
+        lines = cv2.HoughLines(edge, 5, CV_PI/180, thresh, 0, 0)
+        if len(lines) <= 10:
+            break
+            
+    angles = 0.
+    angle_count = 0
+    for (rho, theta) in lines:
+        pang = principal_angle(theta) # (-pi, pi)
+        if pang < -math.pi / 2:
+            pang += math.pi
+        if pang > math.pi / 2:
+            pang -= math.pi
+        # (-pi/2, pi/2)
+        if pang < math.pi / 4 and pang > -math.pi/4:
+            angles += pang
+            angle_count += 1
+
+    rot_angle_rad = angles / double(angle_count)
+    rot_angle_deg = rot_angle_rad * 180. / math.pi
+    return rot_angle_deg
+
+# helper to rotate by an angle (in degrees)
+def rotate(input, angle):
+    midr = input.shape[0] / 2
+    midc = input.shape[1] / 2
+    # Actually rotate the input
+    rot = cv2.getRotationMatrix2D((midc, midr), angle, 1.f);
+    return cv2.warpAffine(input, rot, (input.shape[1], input.shape[0]))
+
+# crossword mask
+def get_cw_mask(input):
+    filled = input.copy()
+    filled = cv2.threshold(filled, 128., 255., cv2.THRESH_BINARY)
+    # Fill from all corners
+    ini = 1
+
+    col = cv2.Scalar(0, 0, 0);
+    mask = np.zeros(filled.shape[0] + 2, filled.shape[1] + 2, np.uint8)
+    cv2.floodFill(filled, mask, (ini,ini), col)
+    cv2.floodFill(filled, mask, (filled.shape[1] - ini,ini), col)
+    cv2.floodFill(filled, mask, (filled.shape[1] - ini,filled.shape[0] - ini), col)
+    cv2.floodFill(filled, mask, (ini,filled.shape[0] - ini), col)
+    # Find average white pixel
+    tr = 0
+    tc = 0
+    locs = findNonZero(filled)
+    for (x, y) in locs:
+      tc += x
+      tr += y
+
+    oldmask = mask.copy()
+
+    bc = cv2.Scalar(255, 255, 255);
+    cv2.floodFill(filled, mask, (double(tc) / double(len(locs)), double(tr) / double(len(locs))), cv2.Scalar(255, 0, 0), bc, bc)
+    mask -= oldmask
+    outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
+    
+    #outputMask.convertTo(outputMask, CV_8UC1, 255.);
+    return outputMask
+    //output = input;
+
+# orthogonal truncated crossword
+def get_cw_orth_trunc(input):
+    mask = get_cw_mask(input, mask)
+
+    # get angle and rotate appropriately
+    angle = get_angle_hough(mask)
+    mask = rotate(mask, angle)
+    input = rotate(input, angle)
+
+    whites = cv2.findNonZero(mask)
+    rect = cv2.boundingRect(whites)
+    return input[rect(1):rect(1)+rect(3), rect(0):rect(0)+rect(2)]
+
+# get grid count (assumes square)
+def get_grid_count(input):
+    tmp = cv2.Canny(input, 50, 200)
+
+    // get line spacings
+    mx = max(input.shape)
+    vals = np.zeros(mx)
+
+    first = True
+    lines = []
+    thresh = 0
+    while first or lines.size() > 100:
+        first = False
+        thresh += 10
+        lines = cv2.HoughLines(tmp, 5, CV_PI/180, thresh, 0, 0)
+        
+    for (rho, theta) in lines:
+        int rho = abs(line[0]);
+        # only take things that are within the image and vaguely orthogonal
+        if rho < mx and (abs(cos(theta)) < 0.1 or abs(sin(theta)) < 0.1)):
+            vals[rho] = vals[rho] + 1
+
+    # TODO: This might be wrong, since I replaced the below old version
+    """
+    Mat planes[] = {Mat_<float>(vals), Mat::zeros(vals.size(), 1, CV_32F)};
+    Mat complexI;
+    merge(planes, 2, complexI);
+    dft(complexI, complexI);
+    split(complexI, planes);
+    magnitude(planes[0], planes[1], planes[0]);
+    Mat magI = planes[0];
+    # get the 90th percentile
+    vector<float> dems;
+    for (int i = 0; i < magI.rows; ++i) {
+      dems.push_back(magI.at<float>(i, 0));
+    }
+    sort(dems.begin(), dems.end());
+    float accept_thresh = dems[dems.size() * 9 / 10];
+    // take the first peak after fst that's over the 90th percentile
+    int fst = 9;
+    float last = magI.at<float>(fst, 0);
+    for (int i = fst + 1; i < magI.rows; ++i) {
+      float ti = magI.at<float>(i, 0);
+      if (ti < last && last > accept_thresh) {
+        return i - 1;
+      }
+      last = ti;
+    }
+    cerr << "Oh no didn't find a grid count";
+    return 1;
+    """
+    # with this:
+    mags = np.absolute(np.fft.fft(vals)
+    thresh = np.percentile(mags, 90)
+    # take the first peak after fst that's over the 90th percentile
+    fst = 9
+    last = mags[fst]
+    for i in range(fst + 1, len(fst)):
+        ti = mags[i]
+        if ti < last and last > thresh:
+            return i - 1
+        last = ti
+    # TODO: Raise some kind of error
+    return 1
+
+def is_black_square(input, grid_count, row, col):
+    sp = double(input.shape[0]) / double(grid_count);
+    # get actual row/col pixel
+    r = int(double(row) * sp + sp / 2);
+    c = int(double(col) * sp + sp / 2);
+
+    (_, tmp) = cv2.threshold(input, 128., 255., cv2.THRESH_BINARY);
+    dim = sp/4
+    left = max(0, c - dim)
+    top = max(0, r - dim)
+    width = min(tmp.shape[1] - left, 2 * dim)
+    height = min(tmp.shape[0] - top, 2 * dim)
+    masked = tmp(top:top+height, left:left+width)
+    vector<Point> whites;
+    whites = cv2.findNonZero(masked)
+    return len(whites) < width * height / 2
+
+def get_grid(input):
+    cw = get_cw_orth_trunc(input)
+    width = get_grid_count(cw)
+    
+    black = [[is_black_square(cw, width, r, c) for c in range(width)] for r in range(width)]
+    
+    return (black, width)
 
 def apply(input):
     if "b64data" in input and isinstance(input["b64data"], basestring):
