@@ -172,7 +172,7 @@ def is_black_square(input, grid_count, row, col):
     r = int(float(row) * sp + sp / 2);
     c = int(float(col) * sp + sp / 2);
 
-    (_, tmp) = cv2.threshold(input, 128., 255., cv2.THRESH_BINARY);
+    (_, tmp) = cv2.threshold(input, 128., 255., cv2.THRESH_BINARY)
     dim = int(sp/4)
     left = max(0, c - dim)
     top = max(0, r - dim)
