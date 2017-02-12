@@ -72,11 +72,12 @@ def get_cw_mask(input):
     for i in range(nlocs):
       tc += locs[1][i]
       tr += locs[0][i]
-    return (tr/float(nlocs), tc/float(nlocs))
+
     oldmask = mask.copy()
 
     bc = (255, 255, 255)
-    cv2.floodFill(filled, mask, (int(float(tc) / float(nlocs)), int(float(tr) / float(nlocs))), (255, 0, 0), bc, bc)
+    _, foo = cv2.floodFill(filled, mask, (int(float(tc) / float(nlocs)), int(float(tr) / float(nlocs))), (255, 0, 0), bc, bc)
+    return foo
     mask -= oldmask
     outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
     
@@ -190,6 +191,7 @@ def get_grid(input):
 
 def apply(input):
     if "b64data" in input and isinstance(input["b64data"], basestring):
+        # TODO: Don't do this split.
         image_data_base64 = input["b64data"].split(",")[1]
     else:
         # TODO: Actually throw an error here
