@@ -25,17 +25,22 @@ def get_angle_hough(input):
             
     angles = 0.
     angle_count = 0
-    for (rho, theta) in lines:
-        pang = principal_angle(theta) # (-pi, pi)
-        if pang < -math.pi / 2:
-            pang += math.pi
-        if pang > math.pi / 2:
-            pang -= math.pi
-        # (-pi/2, pi/2)
-        if pang < math.pi / 4 and pang > -math.pi/4:
-            angles += pang
-            angle_count += 1
+    if lines:
+        for (rho, theta) in lines:
+            pang = principal_angle(theta) # (-pi, pi)
+            if pang < -math.pi / 2:
+                pang += math.pi
+            if pang > math.pi / 2:
+                pang -= math.pi
+            # (-pi/2, pi/2)
+            if pang < math.pi / 4 and pang > -math.pi/4:
+                angles += pang
+                angle_count += 1
 
+    if angle_count == 0:
+        # TODO Throw an error
+        return 0
+        
     rot_angle_rad = angles / double(angle_count)
     rot_angle_deg = rot_angle_rad * 180. / math.pi
     return rot_angle_deg
