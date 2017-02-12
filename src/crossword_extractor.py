@@ -77,7 +77,7 @@ def get_cw_mask(input):
 
     bc = (255, 255, 255)
     foo = cv2.floodFill(filled, mask, (int(float(tc) / float(nlocs)), int(float(tr) / float(nlocs))), (255, 0, 0), bc, bc)
-    return foo
+    return foo.shape
     mask -= oldmask
     outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
     
