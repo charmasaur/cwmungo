@@ -169,7 +169,7 @@ def is_black_square(input, grid_count, row, col):
     top = max(0, r - dim)
     width = min(tmp.shape[1] - left, 2 * dim)
     height = min(tmp.shape[0] - top, 2 * dim)
-    masked = tmp(top:top+height, left:left+width)
+    masked = tmp[top:top+height, left:left+width]
     vector<Point> whites;
     whites = cv2.findNonZero(masked)
     return len(whites) < width * height / 2
