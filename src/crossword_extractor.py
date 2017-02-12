@@ -18,8 +18,9 @@ def get_angle_hough(input):
     
     thresh = 0
     while True:
-        thresh += 2
+        thresh += 10
         lines = cv2.HoughLines(edge, 5, math.pi/180, thresh)
+        # TODO: Failing here (lines is none)
         if len(lines) <= 10:
             break
 
@@ -85,7 +86,7 @@ def get_cw_mask(input):
 # orthogonal truncated crossword
 def get_cw_orth_trunc(input):
     mask = get_cw_mask(input)
-    #return mask
+    return len(np.nonzero(mask)[0])
 
     # get angle and rotate appropriately
     angle = get_angle_hough(mask)
@@ -179,7 +180,7 @@ def is_black_square(input, grid_count, row, col):
     return len(whites[0]) < width * height / 2
 
 def get_grid(input):
-    #return ("hi", get_cw_orth_trunc(input))
+    return ("hi", get_cw_orth_trunc(input))
     cw = get_cw_orth_trunc(input)
 
     width = get_grid_count(cw)
@@ -195,6 +196,7 @@ def apply(input):
         image_data_base64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/4QCaRXhpZgAASUkqAAgAAAAEABIBAwABAAAAAQAAADEBAgAWAAAAPgAAADIBAgAUAAAAVAAAAGmHBAABAAAAaAAAAAAAAABDaHJvbWUgT1MgR2FsbGVyeSBBcHAAMjAxNzowMjowNCAyMDo1MToyMwADAACQBwAEAAAAMDIyMAKgBAABAAAAFAAAAAOgBAABAAAAEgAAAAAAAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAASABQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDj/hf490TwH4hkDRRP4etrQWl7ZaZcyh3idmSQRjeoZhI7OGZtxCgcclfUPEngHQtE8D62mly33jC28Rm1ljaO2SS3tTat8kM8iN5iP+8kwBGDtKqN4+c/NPhTQ9Vi8RWEl8kd7F9oJujaxvJw+6NhvdSOVkUgjyj8zZKhefpPVNG/4V54bsbN/E0N4ms3AOnCzKLam1jcDZICyyJJvkjYrtYDBKhdrs3NgYUZyhSxEuWOqcrN2T66b6Nq3lfdn2mcwxeGo1KmXpuo7OMU+Xm5U3a9vdcbKV3vd3+FW4HwX4hvfAPhTTNL1mw04XSxE51aayin+VjGwKSyIy7XR0wRxsxRWjeeFfDk6W7X+nRS7leSGVZnjDpJI8hYFSAwLu5z+HGMAr0H4f5jjG8Rg5RnSlrGSkrNPZr3tux+ST49yenJxx3tIVV8UZRqcyl1TsrXvuc3ffuLrSkj/dpNqhjkVeA6mOUlW9QcDg+grf0rULqDWfG2nR3M0enjwfd6gLRZCIhdRlnjn2dPMVgGD43AgEHNFFePP+LL1P3+r/uv3fmj6I+ErFfCsiKSFW8nCqDwPnJ4/Emiiiv4Jzv/AJGmJ/xy/wDSmepQ/hQ9F+R//9k="
     image = cv2.imdecode(np.fromstring(base64.b64decode(image_data_base64), dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
     black, width = get_grid(image)
+    return width
     result = "Width " + str(width)
     for row in black:
         result += "\n"
