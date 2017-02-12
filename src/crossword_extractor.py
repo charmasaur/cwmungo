@@ -70,7 +70,6 @@ def get_cw_mask(input):
     tr = 0
     tc = 0
     locs = np.nonzero(filled)
-    return locs
     for i in len(locs[0]):
       tc += locs[1][i]
       tr += locs[0][i]
@@ -88,7 +87,7 @@ def get_cw_mask(input):
 # orthogonal truncated crossword
 def get_cw_orth_trunc(input):
     mask = get_cw_mask(input)
-    return mask
+    #return mask
 
     # get angle and rotate appropriately
     angle = get_angle_hough(mask)
@@ -186,7 +185,7 @@ def is_black_square(input, grid_count, row, col):
     return len(whites) < width * height / 2
 
 def get_grid(input):
-    return ("hi", get_cw_orth_trunc(input))
+    #return ("hi", get_cw_orth_trunc(input))
     cw = get_cw_orth_trunc(input)
 
     width = get_grid_count(cw)
