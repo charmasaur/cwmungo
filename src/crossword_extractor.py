@@ -64,7 +64,7 @@ def get_cw_mask(input):
     # Find average white pixel
     tr = 0
     tc = 0
-    locs = findNonZero(filled)
+    locs = cv2.findNonZero(filled)
     for (x, y) in locs:
       tc += x
       tr += y
