@@ -109,7 +109,7 @@ def get_grid_count(input):
         lines = cv2.HoughLines(tmp, 5, CV_PI/180, thresh, 0, 0)
         
     for (rho, theta) in lines:
-        int rho = abs(line[0]);
+        rho = abs(rho)
         # only take things that are within the image and vaguely orthogonal
         if rho < mx and (abs(cos(theta)) < 0.1 or abs(sin(theta)) < 0.1)):
             vals[rho] = vals[rho] + 1
