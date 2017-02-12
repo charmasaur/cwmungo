@@ -72,7 +72,7 @@ def get_cw_mask(input):
     for i in range(nlocs):
       tc += locs[1][i]
       tr += locs[0][i]
-
+    return (tr/float(nlocs), tc/float(nlocs))
     oldmask = mask.copy()
 
     bc = (255, 255, 255)
