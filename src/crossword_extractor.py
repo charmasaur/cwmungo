@@ -167,13 +167,13 @@ def get_grid_count(input):
     return 1
 
 def is_black_square(input, grid_count, row, col):
-    sp = double(input.shape[0]) / double(grid_count);
+    sp = float(input.shape[0]) / float(grid_count);
     # get actual row/col pixel
     r = int(double(row) * sp + sp / 2);
     c = int(double(col) * sp + sp / 2);
 
     (_, tmp) = cv2.threshold(input, 128., 255., cv2.THRESH_BINARY);
-    dim = sp/4
+    dim = int(sp/4)
     left = max(0, c - dim)
     top = max(0, r - dim)
     width = min(tmp.shape[1] - left, 2 * dim)
