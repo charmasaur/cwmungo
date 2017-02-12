@@ -15,6 +15,7 @@ def principal_angle(angle):
 # gets the rotation angle using hough transform (works best with a single big rectangle, like a mask)
 def get_angle_hough(input):
     edge = cv2.Canny(input, 50, 200)
+    return np.nonzero(edge)
     
     thresh = 0
     while True:
@@ -78,7 +79,6 @@ def get_cw_mask(input):
     bc = (255, 255, 255)
     cv2.floodFill(filled, mask, (int(float(tc) / float(nlocs)), int(float(tr) / float(nlocs))), (255, 0, 0), bc, bc)
     mask -= oldmask
-    return np.nonzero(mask)[1]
     outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
     
     #outputMask.convertTo(outputMask, CV_8UC1, 255.);
@@ -87,10 +87,10 @@ def get_cw_mask(input):
 # orthogonal truncated crossword
 def get_cw_orth_trunc(input):
     mask = get_cw_mask(input)
-    return mask
 
     # get angle and rotate appropriately
     angle = get_angle_hough(mask)
+    return angle
     mask = rotate(mask, angle)
     input = rotate(input, angle)
 
