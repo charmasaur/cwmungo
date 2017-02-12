@@ -57,7 +57,7 @@ def rotate(input, angle):
 def get_cw_mask(input):
     filled = input.copy()
     (_,filled) = cv2.threshold(filled, 128., 255., cv2.THRESH_BINARY)
-    return len(np.nonzero(filled))
+    return np.nonzero(filled)
     # Fill from all corners
     ini = 1
 
