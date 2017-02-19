@@ -12,6 +12,10 @@ def principal_angle(angle):
     # [0, 2pi)
     return math.fmod(tmp + math.pi, 2 * math.pi) - math.pi # [-pi, pi)
 
+# helper to threshold an image
+def do_threshold(input):
+    return cv2.threshold(input, 0., 255., cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
 # gets the rotation angle using hough transform (works best with a single big rectangle, like a mask)
 def get_angle_hough(input):
     edge = cv2.Canny(input, 50, 200)
@@ -54,7 +58,7 @@ def rotate(input, angle):
 # crossword mask
 def get_cw_mask(input):
     filled = input.copy()
-    (_,filled) = cv2.threshold(filled, 128., 255., cv2.THRESH_BINARY)
+    (_,filled) = do_threshold(filled)
     # Fill from all corners
     ini = 1
 
@@ -168,7 +172,7 @@ def is_black_square(input, grid_count, row, col):
     r = int(float(row) * sp + sp / 2);
     c = int(float(col) * sp + sp / 2);
 
-    (_, tmp) = cv2.threshold(input, 128., 255., cv2.THRESH_BINARY)
+    (_, tmp) = do_threshold(input)
     dim = int(sp/4)
     left = max(0, c - dim)
     top = max(0, r - dim)
