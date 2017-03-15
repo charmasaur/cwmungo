@@ -101,7 +101,7 @@ def get_cw_orth_trunc(input):
     return input[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
 
 # get grid count (assumes square)
-def get_grid_count(input):
+def get_grid_row_count(input):
     tmp = cv2.Canny(input, 50, 200)
 
     # get line spacings
@@ -135,18 +135,20 @@ def get_grid_count(input):
         last = ti
     raise Exception("Failed to get grid count")
 
-def is_black_square(input, grid_count, row, col):
-    sp = float(input.shape[0]) / float(grid_count);
+def is_black_square(input, row_count, col_count, row, col):
+    spr = float(input.shape[0]) / float(row_count);
+    spc = float(input.shape[1]) / float(col_count);
     # get actual row/col pixel
-    r = int(float(row) * sp + sp / 2);
-    c = int(float(col) * sp + sp / 2);
+    r = int(float(row) * spr + spr / 2);
+    c = int(float(col) * spc + spc / 2);
 
     tmp = do_threshold(input)
-    dim = int(sp/4)
-    left = max(0, c - dim)
-    top = max(0, r - dim)
-    width = min(tmp.shape[1] - left, 2 * dim)
-    height = min(tmp.shape[0] - top, 2 * dim)
+    dimr = int(spr/4)
+    dimc = int(spc/4)
+    left = max(0, c - dimc)
+    top = max(0, r - dimr)
+    width = min(tmp.shape[1] - left, 2 * dimc)
+    height = min(tmp.shape[0] - top, 2 * dimr)
     masked = tmp[top:top+height, left:left+width]
     whites = np.nonzero(masked)
     return len(whites[0]) < width * height / 2
@@ -154,10 +156,11 @@ def is_black_square(input, grid_count, row, col):
 def get_grid(input):
     cw = get_cw_orth_trunc(input)
 
-    width = get_grid_count(cw)
+    height = get_grid_row_count(cw)
+    width = get_grid_row_count(cv2.transpose(cw))
 
-    black = [[is_black_square(cw, width, r, c) for c in range(width)] for r in range(width)]
-    return (black, width)
+    black = [[is_black_square(cw, height, width, r, c) for c in range(width)] for r in range(height)]
+    return (black, width, height)
 
 def apply(input):
     if "b64data" in input and isinstance(input["b64data"], basestring):
@@ -165,8 +168,8 @@ def apply(input):
     else:
         raise Exception("b64data input missing or malformed")
     image = cv2.imdecode(np.fromstring(base64.b64decode(image_data_base64), dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
-    black, width = get_grid(image)
-    result = str(width) + " " + str(width)
+    black, width, height = get_grid(image)
+    result = str(width) + " " + str(height)
     for row in black:
         result += "|"
         for col in row:
