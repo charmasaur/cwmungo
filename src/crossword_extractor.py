@@ -85,7 +85,6 @@ def get_cw_mask(input):
     mask -= oldmask
     outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
     
-    #outputMask.convertTo(outputMask, CV_8UC1, 255.);
     return np.uint8(outputMask*255)
 
 # orthogonal truncated crossword
@@ -124,36 +123,6 @@ def get_grid_count(input):
         if rho < mx and (abs(math.cos(theta)) < 0.1 or abs(math.sin(theta)) < 0.1):
             vals[int(rho)] = vals[int(rho)] + 1
 
-    # TODO: This might be wrong, since I replaced the below old version
-    """
-    Mat planes[] = {Mat_<float>(vals), Mat::zeros(vals.size(), 1, CV_32F)};
-    Mat complexI;
-    merge(planes, 2, complexI);
-    dft(complexI, complexI);
-    split(complexI, planes);
-    magnitude(planes[0], planes[1], planes[0]);
-    Mat magI = planes[0];
-    # get the 90th percentile
-    vector<float> dems;
-    for (int i = 0; i < magI.rows; ++i) {
-      dems.push_back(magI.at<float>(i, 0));
-    }
-    sort(dems.begin(), dems.end());
-    float accept_thresh = dems[dems.size() * 9 / 10];
-    // take the first peak after fst that's over the 90th percentile
-    int fst = 9;
-    float last = magI.at<float>(fst, 0);
-    for (int i = fst + 1; i < magI.rows; ++i) {
-      float ti = magI.at<float>(i, 0);
-      if (ti < last && last > accept_thresh) {
-        return i - 1;
-      }
-      last = ti;
-    }
-    cerr << "Oh no didn't find a grid count";
-    return 1;
-    """
-    # with this:
     mags = np.absolute(np.fft.fft(vals))
     thresh = np.percentile(mags, 90)
     # take the first peak after fst that's over the 90th percentile
@@ -164,8 +133,7 @@ def get_grid_count(input):
         if ti < last and last > thresh:
             return i - 1
         last = ti
-    # TODO: Raise some kind of error
-    return 1
+    raise Exception("Failed to get grid count")
 
 def is_black_square(input, grid_count, row, col):
     sp = float(input.shape[0]) / float(grid_count);
@@ -195,8 +163,7 @@ def apply(input):
     if "b64data" in input and isinstance(input["b64data"], basestring):
         image_data_base64 = input["b64data"]
     else:
-        # TODO: Actually throw an error here
-        return "Error"
+        raise Exception("b64data input missing or malformed")
     image = cv2.imdecode(np.fromstring(base64.b64decode(image_data_base64), dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
     black, width = get_grid(image)
     result = str(width) + " " + str(width)
