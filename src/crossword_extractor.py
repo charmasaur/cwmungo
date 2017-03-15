@@ -159,14 +159,13 @@ def is_black_square(input, row_count, col_count, row, col):
     r = int(float(row) * spr + spr / 2);
     c = int(float(col) * spc + spc / 2);
 
-    tmp = do_threshold(input)
     dimr = int(spr/4)
     dimc = int(spc/4)
     left = max(0, c - dimc)
     top = max(0, r - dimr)
-    width = min(tmp.shape[1] - left, 2 * dimc)
-    height = min(tmp.shape[0] - top, 2 * dimr)
-    masked = tmp[top:top+height, left:left+width]
+    width = min(input.shape[1] - left, 2 * dimc)
+    height = min(input.shape[0] - top, 2 * dimr)
+    masked = input[top:top+height, left:left+width]
     whites = np.nonzero(masked)
     return len(whites[0]) < width * height / 2
 
@@ -176,7 +175,8 @@ def get_grid(input):
     height = get_grid_row_count(cw)
     width = get_grid_row_count(cv2.transpose(cw))
 
-    black = [[is_black_square(cw, height, width, r, c) for c in range(width)] for r in range(height)]
+    tmp = do_threshold(cw)
+    black = [[is_black_square(tmp, height, width, r, c) for c in range(width)] for r in range(height)]
     return (black, width, height)
 
 def apply(input):
