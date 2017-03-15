@@ -105,7 +105,9 @@ def get_grid_row_count(input):
     tmp = cv2.Canny(input, 50, 200)
 
     # get line spacings
-    mx = max(input.shape)
+    mx = input.shape[0] + 1
+    real_mx = 0
+    real_mn = 10000000
     vals = np.zeros(mx)
 
     first = True
@@ -119,11 +121,26 @@ def get_grid_row_count(input):
     for thingo in lines:
         theta = thingo[0][1]
         rho = abs(thingo[0][0])
-        # only take things that are within the image and vaguely orthogonal
-        if rho < mx and (abs(math.cos(theta)) < 0.1 or abs(math.sin(theta)) < 0.1):
-            vals[int(rho)] = vals[int(rho)] + 1
+        # only take things that are within the image and vaguely horizontal
+        if rho >= mx or abs(math.cos(theta)) >= 0.1:
+            continue
 
-    mags = np.absolute(np.fft.fft(vals))
+        # Get the closest point on the line to the origin
+        a = math.cos(theta)
+        b = math.sin(theta)
+        x0 = a * rho
+        y0 = b * rho
+        # The line is given by (x0, y0) + c * (-b, a), where c is real.
+        # We want to find the point in the middle of the image horizontally.
+        # x0 - c * b = cols / 2, so c = (x0 - cols / 2) / b
+        ycenter = int(y0 + ((x0 - input.shape[1] / 2) / b) * a)
+        if ycenter >= mx or ycenter < 0:
+            continue
+        vals[ycenter] += 1
+        real_mx = max(real_mx, ycenter)
+        real_mn = min(real_mn, ycenter)
+
+    mags = np.absolute(np.fft.fft(vals[real_mn:real_mx+1]))
     thresh = np.percentile(mags, 90)
     # take the first peak after fst that's over the 90th percentile
     fst = 9
