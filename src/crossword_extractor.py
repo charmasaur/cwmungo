@@ -100,7 +100,7 @@ def get_cw_orth_trunc(input):
     rect = cv2.boundingRect(whites)
     return input[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
 
-# get grid count (assumes square)
+# get grid row count
 def get_grid_row_count(input):
     tmp = cv2.Canny(input, 50, 200)
 
