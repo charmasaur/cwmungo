@@ -164,8 +164,8 @@ def get_grid_row_count(input):
     show(deb)
 
     mags = np.absolute(np.fft.fft(vals[real_mn:real_mx+1]))
-    thresh = np.percentile(mags, 90)
-    # take the first peak after fst that's over the 90th percentile
+    thresh = np.max(mags) / 2
+    # take the first peak after fst that's over the threshold
     fst = 9
     last = mags[fst]
     for i in range(fst + 1, len(mags)):
