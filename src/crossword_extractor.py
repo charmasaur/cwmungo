@@ -4,6 +4,21 @@ import cv2
 import numpy as np
 import math
 
+debug = False
+
+def set_debug():
+    global debug
+    debug = True
+
+show_count = 0
+# helper to display an image if debug is true
+def show(input):
+    global show_count
+    if not debug:
+        return
+    cv2.imwrite("tmp/tmp" + str(show_count) + ".png", input)
+    show_count = show_count + 1
+
 # helper to convert an angle (in radians) to [-pi, pi)
 def principal_angle(angle):
     tmp = math.fmod(angle, 2 * math.pi) # (-2pi, 2pi)
@@ -117,7 +132,8 @@ def get_grid_row_count(input):
         first = False
         thresh += 10
         lines = cv2.HoughLines(tmp, 5, math.pi/180, thresh, 0, 0)
-        
+
+    deb = input.copy()
     for thingo in lines:
         theta = thingo[0][1]
         rho = abs(thingo[0][0])
@@ -139,6 +155,13 @@ def get_grid_row_count(input):
         vals[ycenter] += 1
         real_mx = max(real_mx, ycenter)
         real_mn = min(real_mn, ycenter)
+
+        if debug:
+            pt1 = (int(x0 + 1000*-b), int(y0 + 1000*a))
+            pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*a))
+            cv2.line(deb, pt1, pt2, (0, 0, 255), 1)
+
+    show(deb)
 
     mags = np.absolute(np.fft.fft(vals[real_mn:real_mx+1]))
     thresh = np.percentile(mags, 90)
@@ -170,12 +193,15 @@ def is_black_square(input, row_count, col_count, row, col):
     return len(whites[0]) < width * height / 2
 
 def get_grid(input):
+    show(input)
     cw = get_cw_orth_trunc(input)
+    show(cw)
 
     height = get_grid_row_count(cw)
     width = get_grid_row_count(cv2.transpose(cw))
 
     tmp = do_threshold(cw)
+    show(tmp)
     black = [[is_black_square(tmp, height, width, r, c) for c in range(width)] for r in range(height)]
     return (black, width, height)
 
