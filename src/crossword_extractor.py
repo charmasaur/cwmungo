@@ -92,14 +92,29 @@ def get_cw_mask(input):
     for i in range(nlocs):
       tc += locs[1][i]
       tr += locs[0][i]
+    center = (int(float(tc) / float(nlocs)), int(float(tr) / float(nlocs)))
 
     oldmask = mask.copy()
 
     bc = (255, 255, 255)
-    cv2.floodFill(filled, mask, (int(float(tc) / float(nlocs)), int(float(tr) / float(nlocs))), (255, 0, 0), bc, bc)
+    cv2.floodFill(filled, mask, center, (255, 0, 0), bc, bc)
     mask -= oldmask
-    outputMask = mask[1:1+input.shape[0], 1:1+input.shape[1]]
+
+    show(mask*255)
+
+    # The mask can have bits sticking out of it, if lines intersected with the crossword. We start
+    # by median blurring to "cut" the lines.
+    mask = cv2.medianBlur(mask, 51)[1:1+input.shape[0], 1:1+input.shape[1]]
+
+    # But if some of the lines went into big, thick things, they'll still be part of the mask.
+    # Therefore we fill out from the center point again.
+    outputMask = np.zeros((filled.shape[0] + 2, filled.shape[1] + 2), np.uint8)
+    cv2.floodFill(mask, outputMask, center, (255, 255, 255))
+
+    outputMask = outputMask[1:1+input.shape[0], 1:1+input.shape[1]]
     
+    show(outputMask*255)
+
     return np.uint8(outputMask*255)
 
 # orthogonal truncated crossword
