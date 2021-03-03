@@ -84,6 +84,7 @@ def get_cw_mask(input):
     cv2.floodFill(filled, mask, (filled.shape[1] - ini,ini), col)
     cv2.floodFill(filled, mask, (filled.shape[1] - ini,filled.shape[0] - ini), col)
     cv2.floodFill(filled, mask, (ini,filled.shape[0] - ini), col)
+    show(mask*255)
     # Find average white pixel
     tr = 0
     tc = 0
