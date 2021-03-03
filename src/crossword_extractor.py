@@ -213,8 +213,8 @@ def get_grid(input):
     cw = get_cw_orth_trunc(input)
     show(cw)
 
-    height = get_grid_row_count(cw)
     width = get_grid_row_count(cv2.transpose(cw))
+    height = get_grid_row_count(cw)
 
     tmp = do_threshold(cw)
     show(tmp)
