@@ -211,14 +211,15 @@ def is_black_square(input, row_count, col_count, row, col):
 def get_grid(input):
     show(input)
     cw = get_cw_orth_trunc(input)
+
+    cw = cw.copy()
+    cw = do_threshold(cw)
     show(cw)
 
     width = get_grid_row_count(cv2.transpose(cw))
     height = get_grid_row_count(cw)
 
-    tmp = do_threshold(cw)
-    show(tmp)
-    black = [[is_black_square(tmp, height, width, r, c) for c in range(width)] for r in range(height)]
+    black = [[is_black_square(cw, height, width, r, c) for c in range(width)] for r in range(height)]
     return (black, width, height)
 
 def apply(input):
