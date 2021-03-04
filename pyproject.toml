@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "cwmungo"
+version = "0.1.0"
+description = "Extract crossword grids from images"
+authors = ["Harry Slatyer <harry.slatyer@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+opencv-python = "^4.5.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
