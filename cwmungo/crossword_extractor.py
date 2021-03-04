@@ -1,4 +1,3 @@
-import Algorithmia
 import base64
 import cv2
 import numpy as np
@@ -223,7 +222,7 @@ def get_grid(input):
     return (black, width, height)
 
 def apply(input):
-    if "b64data" in input and isinstance(input["b64data"], basestring):
+    if "b64data" in input and isinstance(input["b64data"], bytes):
         image_data_base64 = input["b64data"]
     else:
         raise Exception("b64data input missing or malformed")

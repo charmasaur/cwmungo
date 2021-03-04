@@ -1,8 +1,6 @@
-#!/usr/bin/python2.7
-
 import sys
 import base64
-import crossword_extractor
+import cwmungo.crossword_extractor as crossword_extractor
 import cv2
 import numpy as np
 

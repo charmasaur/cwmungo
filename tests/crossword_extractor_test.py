@@ -1,6 +1,6 @@
 #from . import crossword_extractor
 import base64
-import crossword_extractor
+import cwmungo.crossword_extractor as crossword_extractor
 import os
 
 def test_crossword_extractor():
@@ -20,7 +20,7 @@ def get_num():
     num_files = len(os.listdir("test_data"))
     if num_files % 2 == 1:
         raise Exception("Odd number of files")
-    return num_files / 2
+    return num_files // 2
 
 def load_input(test_num):
     f = open("test_data/in" + str(test_num) + ".jpg", "rb")
