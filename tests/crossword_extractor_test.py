@@ -17,19 +17,19 @@ def test(test_num):
     assert_equal(expected, actual)
 
 def get_num():
-    num_files = len(os.listdir("test_data"))
+    num_files = len(os.listdir("tests/test_data"))
     if num_files % 2 == 1:
         raise Exception("Odd number of files")
     return num_files // 2
 
 def load_input(test_num):
-    f = open("test_data/in" + str(test_num) + ".jpg", "rb")
+    f = open("tests/test_data/in" + str(test_num) + ".jpg", "rb")
     data = f.read()
     f.close()
     return base64.b64encode(data)
 
 def load_expected(test_num):
-    f = open("test_data/out" + str(test_num) + ".txt", "r")
+    f = open("tests/test_data/out" + str(test_num) + ".txt", "r")
     data = f.read()
     f.close()
     return data
