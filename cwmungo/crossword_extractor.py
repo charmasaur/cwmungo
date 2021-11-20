@@ -146,7 +146,7 @@ def get_grid_row_count(input):
     while first or len(lines) > 100:
         first = False
         thresh += 10
-        lines = cv2.HoughLines(tmp, 5, math.pi/180, thresh, 0, 0)
+        lines = cv2.HoughLines(tmp, 1, math.pi/360, thresh, 0, 0)
 
     deb = tmp.copy()
     deb = cv2.merge((deb, deb, deb))
