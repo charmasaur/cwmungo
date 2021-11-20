@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cwmungo"
-version = "0.1.1"
+version = "0.2.0"
 description = "Extract crossword grids from images"
 authors = ["Harry Slatyer <harry.slatyer@gmail.com>"]
 license = "MIT"
