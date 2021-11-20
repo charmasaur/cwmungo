@@ -135,7 +135,7 @@ def get_grid_row_count(input):
     tmp = cv2.Canny(input, 50, 200)
 
     # get line spacings
-    mx = input.shape[0] + 1
+    mx = tmp.shape[0] + 1
     real_mx = 0
     real_mn = 10000000
     vals = np.zeros(mx)
@@ -148,7 +148,8 @@ def get_grid_row_count(input):
         thresh += 10
         lines = cv2.HoughLines(tmp, 5, math.pi/180, thresh, 0, 0)
 
-    deb = input.copy()
+    deb = tmp.copy()
+    deb = cv2.merge((deb, deb, deb))
     for thingo in lines:
         theta = thingo[0][1]
         rho = abs(thingo[0][0])
@@ -164,7 +165,7 @@ def get_grid_row_count(input):
         # The line is given by (x0, y0) + c * (-b, a), where c is real.
         # We want to find the point in the middle of the image horizontally.
         # x0 - c * b = cols / 2, so c = (x0 - cols / 2) / b
-        ycenter = int(y0 + ((x0 - input.shape[1] / 2) / b) * a)
+        ycenter = int(y0 + ((x0 - tmp.shape[1] / 2) / b) * a)
         if ycenter >= mx or ycenter < 0:
             continue
         vals[ycenter] += 1
@@ -217,6 +218,8 @@ def get_grid(input):
 
     width = get_grid_row_count(cv2.transpose(cw))
     height = get_grid_row_count(cw)
+    # show truncated again, for easier comparing with the result
+    show(cw)
 
     black = [[is_black_square(cw, height, width, r, c) for c in range(width)] for r in range(height)]
     return (black, width, height)
